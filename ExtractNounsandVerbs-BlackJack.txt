@@ -1,0 +1,90 @@
+﻿#How to play blackjack
+#1) Create table (game)
+#2) Ask name of player
+#2) Decide how many decks of cards to play with
+#2) Dealer shuffles cards
+#3) Deal cards
+#     - one for player
+#     - one for dealer (face_down)
+#     - another for player
+#     - another for dealer (face_up)
+#4) Calculate scores, only player score is known by the user
+#     - If blackjack, find winner and end game
+#5) Ask Player if they would like to hit or stay
+#       - If hit, calculate score
+#               - If blackjack, find winner and end game
+#               - If bust, find winner and end game
+#6) Dealer hits until 17 is reached
+#        - Calculate score
+#         - If blackjack, find winner and end game
+#         - If bust, find winner and end game
+#7) Still no blackjack and no bust
+#         -find winner
+#         -end game (ask to play again)
+#
+
+
+Nouns (and behaviors)
+Deck
+ -Make a deck
+        - need 52 card objects
+ -Deal
+        -needs to produce one card object from the deck
+ -Shuffle Deck
+        - shuffle all card objects in deck
+Player
+ -Make a player
+    - name
+     - player_score
+     - hand = [ ]
+ -Calculate Score
+        -calculate score of player hand
+ -Blackjack
+                - if player_score == 21
+-black_jack = true 
+-end game 
+         -Bust
+                - if player_score > 21
+                        - bust == true
+                        - end game
+Dealer
+ -Same thing as player. Should be subclass of same thing
+Cards
+ -Make cards
+         - suit
+         - value
+Game
+ - Make players
+- Make Dealer out of Player object.
+- ask name from player to pass into new Player object.
+
+
+-Make deck
+- ask how many decks to play with
+
+
+-Play
+        @end_game = false
+-ask if ready to start
+        if yes then [end_game = false]
+while [end_game == false]
+        - set Player score and dealer score to zero
+                -set blackjack and bust to false
+        - deal Player one card
+        - deal Dealer one card (do not show value)
+        - deal Player one card
+        - deal Dealer one card
+        calculate player score(checks blackjack, check for winner)
+        calculate dealer score(checks blackjack, check for winner)
+        ask Player if wants to hit
+-deal Player one card
+-calculate player score(checks blackjack, check for winner)
+        -check_for_bust?
+        -deal Dealer one card while dealer_score < 17 
+                calculate dealer score(checks blackjack, check for winner)
+        check for winner
+ 
+ -Player win?
+
+
+ Winner
