@@ -1,34 +1,6 @@
-require 'pry'
-
-#How to play blackjack
-#1) Create table (game)
-#2) Ask name of player
-#2) Decide how many decks of cards to play with
-#2) Dealer shuffles cards
-#3) Deal cards
-#     - one for player
-#     - one for dealer (face_down)
-#     - another for player
-#     - another for dealer (face_up)
-#4) Calculate scores, only player score is known by the user
-#     - If blackjack, find winner and end game
-#5) Ask Player if they would like to hit or stay
-#       - If hit, calculate score
-#       	- If blackjack, find winner and end game
-#       	- If bust, find winner and end game
-#6) Dealer hits until 17 is reached
-#        - Calculate score
-#         - If blackjack, find winner and end game
-#         - If bust, find winner and end game
-#7) Still no blackjack and no bust
-#         -find winner
-#         -end game (ask to play again)
-#
-#
-
 class Deck
-  attr_accessor :deck_of_cards  
-
+  attr_accessor :deck_of_cards
+ 
   def initialize
     @deck_of_cards = []
     ["Hearts", "Diamonds", "Clubs" , "Spades"].each do |suit|
@@ -38,29 +10,29 @@ class Deck
     end
     shuffle_cards!
   end
-
+ 
   def deal_card
     deck_of_cards.pop
   end
-
+ 
   def shuffle_cards!
     deck_of_cards.shuffle!
   end
 end
-
+ 
 class Card
   attr_accessor :suit, :value
-
+ 
   def initialize(suit, value)
     @suit = suit
     @value = value
   end
-
+ 
 end
-
+ 
 class Player
   attr_accessor :name, :hand, :blackjack, :bust, :player_score
-
+ 
   def initialize(name)
     @name = name
     @hand = []
@@ -68,14 +40,14 @@ class Player
     @blackjack = false
     @player_score = 0
   end
-
+ 
   def new_game
-    self.hand = []
-    self.bust = false
-    self.blackjack = false
-    self.player_score = 0
+    hand = []
+    bust = false
+    blackjack = false
+    player_score = 0
   end
-
+ 
   def show_hand
     count = 0
     hand.each do |card|
@@ -83,7 +55,7 @@ class Player
       puts "-Card #{count} : #{card.value} of #{card.suit}".center(80)
     end
   end
-
+ 
   def calculate_score
     score = 0
     hand.each do |card|
@@ -92,13 +64,17 @@ class Player
         if score > 21
           score -=10
         end
-      elsif card.value == "King" || card.value == "Queen" || card.value == "Jack" 
+      elsif card.value == "King" || card.value == "Queen" || card.value == "Jack"
         score +=10
       else
         score += card.value.to_i
       end
     end
-    self.player_score = score
+    # #correct for Aces
+    # self.hand.select {|e| e.value == "Ace"}.count.times do
+    #   score -=10 if self.player_score > 21
+    # end
+    player_score = score
     bust?
     blackjack?
     if blackjack == true
@@ -110,42 +86,42 @@ class Player
       puts "#{name} BUSTED!"
       gets
     end
-    self.player_score
+    player_score
   end
-
+ 
   def bust?
-    if self.player_score > 21
-      self.bust = true
+    if player_score > 21
+      bust = true
     end
   end
-
+ 
   def blackjack?
-    if self.player_score == 21
-      self.blackjack = true
+    if player_score == 21
+      blackjack = true
     end
   end
 end
-
+ 
 class Table
   attr_accessor :table, :user, :dealer, :winner
-
+ 
   def initialize
-  system 'cls'
-  puts
-  puts
-  puts "Welcome to blackjack!".center(80)
-  gets
-  puts "What is your name?"
-  name = gets.chomp
-  @user = Player.new(name)
-  @dealer = Player.new("Dealer")
-  @winner = Player.new("")
-  puts
-  puts "Hello #{user.name}! Let's play some blackjack!".center(80)
-  @table = Deck.new
-  gets
+    system 'cls'
+    puts
+    puts
+    puts "Welcome to blackjack!".center(80)
+    gets
+    puts "What is your name?"
+    name = gets.chomp
+    @user = Player.new(name)
+    @dealer = Player.new("Dealer")
+    @winner = Player.new("")
+    puts
+    puts "Hello #{user.name}! Let's play some blackjack!".center(80)
+    @table = Deck.new
+    gets
   end
-
+ 
   def find_winner
     #This is suppored to find the winner. winners Cases:
     #-Either player get blackjack
@@ -166,14 +142,14 @@ class Table
       dealer
     end
   end
-
+ 
   def play
     keep_playing = true
     while keep_playing == true
       #Set up new_game
       user.new_game
       dealer.new_game
-
+ 
       #Deal cards to players
       system 'cls'
         #Deal to user
@@ -186,7 +162,7 @@ class Table
       dealer.hand << table.deal_card
       gets
         #Deal to user
-      puts  
+      puts
       puts "Dealing second card to #{user.name}!\n\n".center(80)
       user.hand << table.deal_card
       gets
@@ -197,14 +173,14 @@ class Table
       dealer.hand << table.deal_card
       gets
       puts "#{dealer.name} received a #{dealer.hand[1].value} of #{dealer.hand[1].suit}"
-      gets  
-
+      gets
+ 
       #Calculate scores
       user.player_score = user.calculate_score
-      dealer.player_score = dealer.calculate_score  
-
+      dealer.player_score = dealer.calculate_score
+ 
       # HIT OR STAY
-      while user.player_score < 21 && user.bust == false && user.blackjack == false && dealer.blackjack == false do
+      while user.player_score < 21 && user.bust == false && user.blackjack == false do
         system 'cls'
         puts "Dealer is showing #{dealer.hand[1].value} of #{dealer.hand[1].suit}".center(80)
         gets
@@ -219,17 +195,17 @@ class Table
           gets
           next
         end
-        
+ 
         system 'cls'
-        
+ 
         if answer == "2"
           puts "#{user.name} decided to stay with a score of #{user.player_score}."
           puts "\nYOUR CARDS:".center(80)
           user.show_hand
           gets
           break
-        end 
-
+        end
+ 
         system 'cls'
         puts "\n\n\n\n\n Dealing to #{user.name}".center(80)
         gets
@@ -239,8 +215,8 @@ class Table
         user.show_hand
         puts " #{user.name} score is : #{user.player_score}!"
         gets
-      end 
-
+      end
+ 
       #Dealer Shows Hand
       puts
       puts "______________________________________________________\n\n"
@@ -258,13 +234,12 @@ class Table
         puts "#{dealer.name} draws card".center(80)
         gets
         dealer.hand << table.deal_card
-        dealer.player_score = dealer.calculate_score
+        dealer.calculate_score
         dealer.show_hand
         puts "#{dealer.name} has a score of: #{dealer.player_score}!"
         gets
-      end 
-
-      #Find and Declare Winner
+      end
+ 
       if user.player_score == dealer.player_score
         puts "It's a Tie!"
       else
@@ -284,7 +259,7 @@ class Table
         if !['y','n'].include?(answer.downcase)
           puts "Error: Please enter (y/n)"
           next
-        end 
+        end
         if answer.downcase != 'y'
           keep_playing = false
           puts "Thanks for playing blackjack!"
@@ -297,5 +272,5 @@ class Table
     end
   end
 end
-
+ 
 Table.new.play
